@@ -1,0 +1,48 @@
+# This file will fetch every movie from the first five pages of Allocine,
+# then extract those which have a grade of 3.5 or more, sort them, and
+# print them.
+
+push 1
+push 5
+math.range
+
+array.map [
+  http.get http://www.allocine.fr/film/aucinema/?page=${_}
+  html.select --type=element[] #content-start .col-left .card
+
+  array.map --silent-errors [
+    concurrent [
+      html.select --type=text .meta-title-link
+      string.clean
+      object.wrap --key=name
+    ] [
+      html.select --type=text .rating:nth-child(2) .stareval
+      number.parse --locale=fr-FR
+      object.wrap --key=grade
+    ]
+
+    object.assign
+  ]
+
+  array.filter [
+    json.select .grade
+    number.gt --or-eq 3.5
+  ]
+]
+
+array.flatten
+
+array.sortBy [
+  json.select .grade
+  number.neg
+]
+
+array.each [
+  local movieName [
+    json.select .name
+  ]
+  local movieGrade [
+    json.select .grade
+  ]
+  console.log ${movieName} (${movieGrade})
+]
