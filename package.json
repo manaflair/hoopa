@@ -1,0 +1,25 @@
+{
+  "name": "hoopa",
+  "bin": {
+    "hoopa": "./bin/hoopa"
+  },
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "cwait": "^1.0.0",
+    "entities": "^1.1.1",
+    "lodash": "^4.15.0",
+    "minimist": "^1.2.0",
+    "moment": "^2.14.1",
+    "nedb": "^1.8.0",
+    "node-fetch": "^1.6.0",
+    "numbro": "^1.9.3",
+    "pegjs": "^0.10.0",
+    "progress": "^1.1.8",
+    "rc": "^1.1.6"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-es2016": "^6.11.3"
+  }
+}
