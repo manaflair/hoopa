@@ -7,10 +7,10 @@ line            = empty / comment / instruction
 empty           = S* "\n" { return null }
 comment         = S* "#" [^\n]* "\n" { return null }
 instruction     = S* name:instructionName options:(S+ option:option { return option })* (S+ optend)? arg:(S+ arg:arg { return arg })? instructionSets:(S+ instructionSet:instructionSet { return instructionSet })* "\n" { return { name, options: Object.assign({}, ... options), arg, instructionSets, source: { location: location(), text: text() } } }
-instructionSet  = S* "[\n" instructions:instructions S* "]" { return instructions }
+instructionSet  = S* "{\n" instructions:instructions S* "}" { return instructions }
 
 instructionName = [a-zA-Z]+("."[a-zA-Z]+)* { return text() }
-arg             = (!(S* "[\n") [^\n])+ { return text() }
+arg             = (!(S* "{\n") [^\n])+ { return text() }
 
 option          = "--" name:optname value:("=" value:optvalue { return value; })? { return { [name]: !require(`lodash`).isNil(value) ? value : true } }
 optname         = [a-z]+("-"[a-z]+)* { return require(`lodash`).camelCase(text()) }

@@ -3,7 +3,7 @@ import { first, isArray }     from 'lodash';
 import { iterateWithContext } from '../../lib/fn/iterateWithContext';
 import { runHoopaContext }    from '../../lib/fn/runHoopaContext';
 
-export default function each(next, context, { instructionSets, options: { continueOnErrors, silentErrors } }) {
+export default function filter(next, context, { instructionSets, options: { continueOnErrors, silentErrors } }) {
 
     if (instructionSets.length !== 1)
         throw new Error(`Expected exactly one instruction set`);

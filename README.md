@@ -30,20 +30,37 @@ So, with this is mind, here is what a Hoopa script looks like:
 ```
 push 0
 push 5
-number.range
+math.range
 
 array.each [
-  console.log
+  print
 ]
 ```
 
-Let's take this code line by line. We first start with an empty stack. On this stack we push two values: `0` and `5`, then we use the `number.range` instruction in order to pop those two values and generate a range that goes from `0` to `5` (so in the end, our stack will contain a single value, an array with `[0, 1, 2, 3, 4]`). Finally, we iterate over this array and print every element in it.
+Let's take this code line by line. We first start with an empty stack. On this stack we push two values: `0` and `5`, then we use the `math.range` instruction in order to pop those two values and generate a range that goes from `0` to `5` (so in the end, our stack will contain a single value, an array with `[0, 1, 2, 3, 4]`). Finally, we iterate over this array and print every element in it.
+
+We could have avoided pushing values on the stack by using options:
+
+```
+math.range
+  --from 0
+  --to 5
+
+array.each [
+  print
+]
+```
 
 That's the basic of the language, but frankly there's not much more to know. One thing you might notice is the strange brackets arround the `console.log` instruction - the code between those brackets is called an "instruction set", and is basically what you would call a block in every other language. Some instructions take instruction sets as parameters, some don't. Usually, instruction sets are only used by flow control instructions (`if`, array iteration, etc).
 
-## Standard Library
+## Standard library
 
 *To be continued...*
+
+## Complex example
+
+```
+```
 
 ## Advanced
 
@@ -59,9 +76,11 @@ Running Hoopa with the `--parallel` flag means that the crawler will send a lot 
 
 ```yaml
 networkManager:
+
     all:
         maxConcurrentRequests: 5
-        minRquestInterval: 1000
+        minRequestInterval: 1000
+
     www.allocine.fr:
         maxConcurrentRequests: 3
         minRequestInterval: 3000
@@ -75,10 +94,12 @@ Just like you can rate limit the crawler, you can also easily set its user agent
 
 ```yaml
 networkManager:
+
     all:
         userAgent: "Hoopa Hoopa c'est lui, le Marsupilami"
+
     www.allocine.fr:
-        userAgent: "My favorite movie might very well be Django Unchained"
+        userAgent: "One of my favorite movies is Django Unchained"
 ```
 
 ### License (MIT)

@@ -1,15 +1,9 @@
-export default function range(next, context) {
+export default function range(next, context, { options: { from = null, to = null, step = 1 } }) {
 
     let numbers = [];
 
-    let count = Math.floor(Number(context.top()));
-    context = context.pop();
-
-    let start = Math.floor(Number(context.top()));
-    context = context.pop();
-
-    for (let t = 0; t < count; ++ t)
-        numbers.push(start + t);
+    for (let t = Number(from), T = Number(to), s = Number(step); t < T; t += s)
+        numbers.push(t);
 
     return next(context.push(numbers));
 

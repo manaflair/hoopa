@@ -47,7 +47,9 @@ export function iterateWithContext(context, cycleCount, runCycle, getFinalContex
             subPromises.push(runCycleWrapper(context, t));
 
         return Promise.all(subPromises).then(subContexts => {
-            return getFinalContext(subContexts);
+            return getFinalContext(subContexts.filter(context => {
+                return !isNull(context);
+            }));
         });
 
     } else {

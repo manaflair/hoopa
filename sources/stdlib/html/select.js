@@ -29,7 +29,7 @@ function toJs(element) {
     if (!element.length)
         return null;
 
-    return Object.assign({}, element.get(0).attribs);
+    return Object.assign({}, element.get(0).attribs, { body: toText(element) });
 
 }
 

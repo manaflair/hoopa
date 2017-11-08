@@ -16,20 +16,26 @@ export class NetworkHostManager {
 
     }
 
-    get(url, { type = `text` } = {}) {
+    get(url, { type = `text`, full = false } = {}) {
 
         return new Promise((resolve, reject) => {
 
             this.taskQueue.add(() => {
 
                 return fetch(url, { headers: { [`User-Agent`]: this.userAgent } }).then(response => {
-                    return response[type]();
-                }).then(result => {
-                    resolve(result);
-                }, error => {
+
+		    return response[type]().then(body => {
+			resolve(full ? { status: response.status, body } : body);
+		    });
+
+		}).catch(error => {
+
                     reject(error);
-                }).then(() => {
-                    return sleep(this.minRequestInterval);
+
+		}).then(() => {
+
+		    return sleep(this.minRequestInterval);
+
                 });
 
             });
