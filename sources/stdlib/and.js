@@ -1,26 +1,24 @@
-import { last }               from 'lodash';
-
 import { iterateWithContext } from '../lib/fn/iterateWithContext';
+import { runHoopaContext }    from '../lib/fn/runHoopaContext';
 
 export default function and(next, context, { instructionSets }) {
 
     if (instructionSets.length === 0)
         throw new Error(`Expected at least one instruction set (got ${instructionSets.length})`);
 
-    return iterateWithContext(context, instructionSets.length, (subContext, index) => {
+    return instructionSets.reduce((promise, instructionSet) => promise.then(result => {
 
-        return run(subContext, instructionSets[index]);
+        if (!result)
+            return result;
 
-    }, subContexts => {
+        return runHoopaContext(context.clone(), instructionSet).then(context => {
+            return context.top();
+        });
 
-        let doesSucceed = subContexts.every(context => context.top());
+    }), Promise.resolve(true)).then(result => {
 
-        return context.push(doesSucceed ? last(subContexts) : null);
-
-    }).then(context => {
-
-        return next(context);
+        return next(context.push(result));
 
     });
 
-};
+}

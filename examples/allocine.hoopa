@@ -12,11 +12,11 @@ array.map {
     concurrent {
       html.select --type=text .meta-title-link
       string.clean
-      object.wrap --key=name
+      json.slurp {name:.}
     } {
       html.select --type=text .rating-item:nth-child(2) .stareval-note
       number.parse --locale=fr-FR
-      object.wrap --key=grade
+      json.slurp {grade:.}
     }
 
     object.assign
@@ -42,5 +42,13 @@ array.each {
   local movieGrade {
     json.select .grade
   }
+
+  or {
+    json.select {name:.name}
+    store.find
+  } {
+    store.save
+  }
+
   console.log ${movieName} (${movieGrade})
 }

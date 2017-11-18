@@ -1,24 +1,24 @@
 import { iterateWithContext } from '../lib/fn/iterateWithContext';
+import { runHoopaContext }    from '../lib/fn/runHoopaContext';
 
 export default function or(next, context, { instructionSets }) {
 
     if (instructionSets.length === 0)
         throw new Error(`Expected at least one instruction set (got ${instructionSets.length})`);
 
-    return iterateWithContext(context, instructionSets.length, (subContext, index) => {
+    return instructionSets.reduce((promise, instructionSet) => promise.then(result => {
 
-        return run(subContext, instructionSets[index]);
+        if (result)
+            return result;
 
-    }, subContexts => {
+        return runHoopaContext(context.clone(), instructionSet).then(context => {
+            return context.top();
+        });
 
-        let firstSuccessfulBranch = subContexts.find(context => context.top());
+    }), Promise.resolve(false)).then(result => {
 
-        return context.push(firstSuccessfulBranch ? firstSuccessfulBranch.top() : null);
-
-    }).then(context => {
-
-        return next(context);
+        return next(context.push(result));
 
     });
 
-};
+}
