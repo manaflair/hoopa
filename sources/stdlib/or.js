@@ -1,4 +1,4 @@
-import { iterateWithContext } from '../../lib/fn/iterateWithContext';
+import { iterateWithContext } from '../lib/fn/iterateWithContext';
 
 export default function or(next, context, { instructionSets }) {
 

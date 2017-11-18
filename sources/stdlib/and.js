@@ -1,6 +1,6 @@
 import { last }               from 'lodash';
 
-import { iterateWithContext } from '../../lib/fn/iterateWithContext';
+import { iterateWithContext } from '../lib/fn/iterateWithContext';
 
 export default function and(next, context, { instructionSets }) {
 
