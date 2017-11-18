@@ -6,11 +6,12 @@ import { sleep }             from './fn/sleep';
 
 export class NetworkHostManager {
 
-    constructor({ userAgent = `Hoopa`, maxConcurrentRequests = 6, minRequestInterval = 0 } = {}) {
+    constructor({ maxConcurrentRequests = 6, minRequestInterval = 0, headers = {} } = {}) {
 
-        this.userAgent = userAgent;
         this.maxConcurrentRequests = maxConcurrentRequests;
         this.minRequestInterval = minRequestInterval;
+
+        this.headers = Object.assign({}, {});
 
         this.taskQueue = new TaskQueue(Promise, this.maxConcurrentRequests);
 
@@ -22,7 +23,7 @@ export class NetworkHostManager {
 
             this.taskQueue.add(() => {
 
-                return fetch(url, { headers: { [`User-Agent`]: this.userAgent } }).then(response => {
+                return fetch(url, { headers: this.headers }).then(response => {
 
 		    return response[type]().then(body => {
 			resolve(full ? { status: response.status, body } : body);

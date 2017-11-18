@@ -1,21 +1,30 @@
+import rc                          from 'rc';
+
 import { Context, ContextSymbols } from './lib/Context';
-import { NetworkManager }          from './lib/NetworkManager';
 import { ProgressManager }         from './lib/ProgressManager';
-import { StorageManager }          from './lib/StorageManager';
 
 import { parseHoopaInstructions }  from './lib/fn/parseHoopaInstructions';
 import { runHoopaContext }         from './lib/fn/runHoopaContext';
 
-export default (code, {networkManager, storage, parallel, progress} = {}) => {
+export { NetworkManager }          from './lib/NetworkManager';
+export { StorageManager }          from './lib/StorageManager';
+
+export function getRcConfiguration() {
+
+    return rc(`hoopa`);
+
+}
+
+export default (code, {network, storage, parallel, progress} = {}) => {
 
     let definition = code.toString();
     let instructions = parseHoopaInstructions(definition);
 
     return runHoopaContext(new Context().declareRegisters({
 
-        [ContextSymbols.networkManager]: new NetworkManager(networkManager),
+        [ContextSymbols.networkManager]: network,
         [ContextSymbols.progressManager]: new ProgressManager({ onNotify: progress }).start(),
-        [ContextSymbols.storageManager]: new StorageManager(storage),
+        [ContextSymbols.storageManager]: storage,
 
         [ContextSymbols.enableParallelProcessing]: parallel
 

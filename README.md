@@ -186,18 +186,20 @@ networkManager:
 
 In the example above, Hoopa will not send more than 5 concurrent requests and will wait for at least one second between each request from a same "thread", except for requests targeting the `www.allocine.fr` server, which has its limits decreased to respectively 3 concurrent requests and a 3 seconds min interval.
 
-### User-agent
+### User-agent & other headers
 
-Just like you can rate limit the crawler, you can also easily set its user agents:
+Just like you can rate limit the crawler, you can also easily set its user agent strings:
 
 ```yaml
 networkManager:
 
     all:
-        userAgent: "Hoopa Hoopa c'est lui, le Marsupilami"
+        headers:
+            "User-Agent": "curl/7.9.8 (i686-pc-linux-gnu) libcurl 7.9.8 (OpenSSL 0.9.6b) (ipv6 enabled)"
 
     www.allocine.fr:
-        userAgent: "One of my favorite movies is Django Unchained"
+        headers:
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
 ```
 
 ### License (MIT)

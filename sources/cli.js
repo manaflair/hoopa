@@ -1,14 +1,15 @@
-import { createReadStream }        from 'fs';
-import { debounce }                from 'lodash';
-import minimist                    from 'minimist';
-import moment                      from 'moment';
-import ProgressBar                 from 'progress';
-import rc                          from 'rc';
+import { createReadStream }          from 'fs';
+import { debounce }                  from 'lodash';
+import minimist                      from 'minimist';
+import moment                        from 'moment';
+import ProgressBar                   from 'progress';
 
-import { consumeStream }           from './lib/fn/consumeStream';
-import hoopa                       from './index';
+import { consumeStream }             from './lib/fn/consumeStream';
+import { NetworkManager }            from './lib/NetworkManager';
+import { StorageManager }            from './lib/StorageManager';
+import hoopa, { getRcConfiguration } from './index';
 
-let config = rc(`hoopa`);
+let config = getRcConfiguration();
 
 let options = minimist(process.argv.slice(2), {
 
@@ -60,10 +61,13 @@ let printProgress = debounce(function printProgress(progressManager) {
 
 });
 
+let networkManager = new NetworkManager(config.networkManager);
+let storageManager = new StorageManager(options.storage);
+
 function runStream(stream) {
 
     return consumeStream(stream).then(data => {
-        return hoopa(data, { ... config, progress: printProgress });
+        return hoopa(data, { network: networkManager, storage: storageManager, progress: printProgress, parallel: options.parallel });
     });
 
 }
