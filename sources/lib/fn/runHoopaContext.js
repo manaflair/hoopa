@@ -17,10 +17,6 @@ export function runHoopaContext(context, instructions = []) {
             return runHoopaContext(nextContext, instructions.slice(1));
         }, context, instruction);
 
-    }).then(endContext => {
-
-        return endContext;
-
     }).catch(error => {
 
         if (!error.instruction)

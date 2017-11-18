@@ -5,7 +5,7 @@
 math.range --from=1 --to=5
 
 array.map {
-  http.get http://www.allocine.fr/film/aucinema/?page=${_}
+  http.get http://www.allocine.fr/film/aucinema/?page=${^0}
   html.select --type=element[] #content-layout .card
 
   array.map --silent-errors {

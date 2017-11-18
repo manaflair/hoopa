@@ -14,6 +14,18 @@ export function spawnExternalProcess(name, ... args) {
 
         let process = spawn(name, args);
 
+        process.on(`error`, error => {
+            if (error.code === `ENOENT`) {
+                if (name === `jq`) {
+                    reject(new Error(`Couldn't find jq - you must install it manually if you want to use the json.select command`));
+                } else {
+                    reject(new Error(`Couldn't find the external process "${name}"`));
+                }
+            } else {
+                reject(error);
+            }
+        });
+
         process.stdout.setEncoding(`utf8`);
 
         process.stdout.on(`data`, data => {

@@ -1,32 +1,36 @@
 import { isNil } from 'lodash';
 
-export function interpolateString(str, registers) {
+function getStringVariable(context, name) {
 
-    if (isNil(registers))
-        throw new Error(`Invalid registers`);
+    if (name[0] === `^`) {
 
-    let fullMatch = str.match(/^\$\{(\w+)\}$/);
+        return context.at(name.slice(1));
+
+    } else {
+
+        if (!Reflect.has(context.registers, name))
+            throw new Error(`Undeclared variable "${name}"`);
+
+        return Reflect.get(context.registers, name);
+
+    }
+
+}
+
+export function interpolateString(str, context) {
+
+    let fullMatch = str.match(/^\$\{(\w+|\^[0-9]+)\}$/);
 
     if (fullMatch) {
 
         let [ , name ] = fullMatch;
 
-        if (!Reflect.has(registers, name))
-            throw new Error(`Undeclared variable "${name}"`);
-
-        return registers[name];
+        return getStringVariable(context, name);
 
     } else {
 
-        return str.replace(/(^|[^\\])((?:\\\\)*\$\{\w+\})+/g, (all, prefix, variables) => {
-            return prefix + variables.replace(/\$\{(\w+)\}/g, (all, name) => {
-
-                if (!Reflect.has(registers, name))
-                    throw new Error(`Undeclared variable "${name}"`);
-
-                return registers[name];
-
-            });
+        return str.replace(/(^|[^\\])(?:\\\\)*\$\{(\w+|\^[0-9]+)\}/g, (all, prefix, name) => {
+            return prefix + getStringVariable(context, name);
         });
 
     }

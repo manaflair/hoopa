@@ -49,7 +49,61 @@ array.each {
 }
 ```
 
-That's the basic of the language, but frankly there's not much more to know. One thing you might notice is the strange brackets arround the `console.log` instruction - the code between those brackets is called an "instruction set", and is basically what you would call a block in every other language. Some instructions take instruction sets as parameters, some don't. Usually, instruction sets are only used by flow control instructions (`if`, array iteration, etc).
+### Control flow & instruction sets
+
+You might have noticed in the previous example the strange brackets arround the `console.log` instruction - the code between those brackets is called an "instruction set", and is basically what you would call a block in every other language. Some instructions take instruction sets as final parameters, some don't. Usually, instruction sets are only used by flow control instructions (`if`, array iteration, etc). Another example:
+
+```
+if {
+  push 1
+} {
+  # if the condition is satisfied
+} {
+  # otherwise
+}
+```
+
+### Variables
+
+Variables are supported! They also use the stack - any value that ends up at the top of the stack in the subcontext will be stored inside the variable:
+
+```
+local myVar {
+  push 42
+}
+```
+
+Variables are inherited from a context to its child subcontexts, but child subcontexts cannot change their value (any redeclaration will shadow the variable):
+
+```
+local myVar {
+  push 42
+}
+
+math.range --from=0 --to=5
+
+array.map {
+  push ${myVar}
+}
+```
+
+Finally, a convenience syntax exists to allow you to directly access the stack, without needing to explicitely declare a variable:
+
+```
+push 42
+push 24
+
+console.log ${^0} # Will print the element at the top of the stack
+console.log ${^1} # Will print the second element from the stack
+```
+
+Variable can be interpolated, in which case they'll be converted into strings:
+
+```
+push 42
+
+console.log The magic number is ${^0}!
+```
 
 ## Standard library
 
@@ -65,7 +119,7 @@ That's the basic of the language, but frankly there's not much more to know. One
 math.range --from=1 --to=5
 
 array.map {
-  http.get http://www.allocine.fr/film/aucinema/?page=${_}
+  http.get http://www.allocine.fr/film/aucinema/?page=${^}
   html.select --type=element[] #content-layout .card
 
   array.map --silent-errors {

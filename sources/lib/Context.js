@@ -5,10 +5,6 @@ export class Context {
         this.registers = context ? Object.create(context.registers) : Object.create(null);
         this.stack = context ? context.stack.slice() : [];
 
-        Reflect.defineProperty(this.registers, `_`, {
-            get: () => this.top()
-        });
-
     }
 
     isEmpty() {
@@ -23,6 +19,17 @@ export class Context {
             throw new Error(`Cannot fetch data from an empty stack`);
 
         return this.stack[this.stack.length - 1];
+
+    }
+
+    at(n) {
+
+        n = Number(n);
+
+        if (n >= this.stack.length)
+            throw new Error(`Cannot fetch element #${n} of a stack of size ${this.stack.length}`);
+
+        return this.stack[this.stack.length - 1 - n];
 
     }
 
